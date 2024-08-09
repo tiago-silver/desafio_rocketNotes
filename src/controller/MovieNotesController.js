@@ -31,5 +31,28 @@ class MovieNotesController{
         return response.json({message:"Nota cadastrada com sucesso!"})
 
     }
+
+    async show(request, response){
+        const {id} = request.params
+
+    
+        const notes = await knex("movie_notes").where({id}).first()
+        const movieTags = await knex("movie_tags").where({note_id: id}).orderBy("name")
+
+
+
+        return response.json({
+            ...notes,
+            movieTags
+        })
+    }  
+    
+    async index(request, response){
+        const {title, user_id, movieTags} = request.query
+
+        const notes = await knex("movie_notes").where({user_id}).orderBy("title")
+
+        return response.json(notes)
+    }
 }
 module.exports = MovieNotesController
